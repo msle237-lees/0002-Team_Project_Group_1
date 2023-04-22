@@ -67,6 +67,9 @@ class Lab7GroupProject(tk.Tk):
         self.save_button = ttk.Button(self, text="Save", command=self.save_file)
         self.save_button.grid(row=3, column=3, sticky="ew")
 
+        # Trap the enter key to move the cursor to next box
+        self.file_name_entry.bind('<Return>', self.focusDown)
+
         # For example, assume the source file has "the Senate has 100 members" in it; if the search term entered is 
         # "the" and n is 0, add "the" to your internal list; if the search term entered is "the" and n is 1, add "Senate" 
         # to your internal list; if the search term entered is "the" and n is 2, add "has" to your internal list, etcetera.
@@ -90,7 +93,9 @@ class Lab7GroupProject(tk.Tk):
         file_name = filedialog.asksaveasfilename()
         file_operations = FileOperations()
         file_operations.save_data_to_file(file_name, self.total_matches.get())
-
+    # For enter key bind, will move focus to second textbox if first textbox is focused when enter key is pressed
+    def focusDown(self, *args):
+        self.search_string_entry.focus()
 if __name__ == "__main__":
     app = Lab7GroupProject()
     app.mainloop()
