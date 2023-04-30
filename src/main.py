@@ -94,7 +94,9 @@ class Lab7GroupProject(tk.Tk):
         file_operations = FileOperations()
         status = file_operations.open_file(self.file_name.get())
         if status:
-            data = file_operations.search_file(self.search_string.get(), self.case_sensitive.get())
+            data = file_operations.search_file(self.search_string.get(), self.case_sensitive.get(),
+                                               self.file_name.get(),
+                                               self.spin.get())
             self.total_matches.set(len(data))
         else:
             self.total_matches.set("File open failure")
