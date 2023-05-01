@@ -74,6 +74,9 @@ class Lab7GroupProject(tk.Tk):
         self.save_button = ttk.Button(self, text="Save", command=self.save_file)
         self.save_button.grid(row=4, column=3, sticky="ew")
 
+        # Create instance variable to contain the results
+        self.resultContents = []
+
         # Trap the enter key to move the cursor to next box
         self.file_name_entry.bind('<Return>', self.focusDown)
 
@@ -94,15 +97,18 @@ class Lab7GroupProject(tk.Tk):
         file_operations = FileOperations()
         status = file_operations.open_file(self.file_name.get())
         if status:
-            data = file_operations.search_file(self.search_string.get(), self.case_sensitive.get())
+            data = file_operations.search_file(self.search_string.get(), self.case_sensitive.get(),
+                                               self.file_name.get(),
+                                               self.spin.get())
             self.total_matches.set(len(data))
+            self.resultContents = data.copy()
         else:
             self.total_matches.set("File open failure")
 
     def save_file(self):
         file_name = filedialog.asksaveasfilename()
         file_operations = FileOperations()
-        file_operations.save_data_to_file(file_name, self.total_matches.get())
+        file_operations.save_data_to_file(file_name, self.total_matches.get(), self.resultContents)
     # For enter key bind, will move focus to second textbox if first textbox is focused when enter key is pressed
     def focusDown(self, *args):
         self.search_string_entry.focus()
