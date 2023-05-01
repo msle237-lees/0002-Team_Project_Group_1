@@ -1,9 +1,12 @@
 import re
 
+
 class FileOperations:
+    # Constructor
     def __init__(self):
         pass
 
+    # Opens the specified file and stores its content in the file_content attribute
     def open_file(self, file_name):
         try:
             with open(file_name, 'r') as file:
@@ -13,30 +16,38 @@ class FileOperations:
             print(f"Error: {e}")
             return False
 
+    # Searches the file for occurrences of search_string and returns the nth word after each occurrence
     def search_file(self, search_string, case_sensitive, n_th):
         results = []
 
+        # Check if file_content attribute is set
         if not hasattr(self, 'file_content'):
             print("Error: File not opened or loaded. Please use open_file method first.")
             return results
 
+        # Convert search_string to lowercase if case_sensitive is False
         if not case_sensitive:
             search_string = search_string.lower()
 
+        # Iterate through lines in the file
         for line in self.file_content:
+            # Convert the line to lowercase if case_sensitive is False
             if not case_sensitive:
                 line = line.lower()
 
+            # Split the line into words and find the occurrences of search_string
             words = line.split()
-            occurrences = [index for index, word in enumerate(words) if word == search_string]
+            occurrences = [index for index, word in enumerate(
+                words) if word == search_string]
 
+            # Append the nth word after each occurrence to the results list
             for index in occurrences:
                 if index + n_th < len(words):
                     results.append(words[index + n_th])
 
         return results
 
-
+    # Saves the search results to the specified output file
     def save_data_to_file(self, file_name, results):
         try:
             with open(file_name, 'w') as savefile:
@@ -47,6 +58,9 @@ class FileOperations:
         except Exception as e:
             print(f"Error: {e}")
             return False
+
+# Main method to test the FileOperations class
+
 
 def main():
     # Initialize the FileOperations class
@@ -74,5 +88,6 @@ def main():
         print(f"Failed to save search results to {output_file}")
 
 
+# Entry point for the script
 if __name__ == "__main__":
     main()
