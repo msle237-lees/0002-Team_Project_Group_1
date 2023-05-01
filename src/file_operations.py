@@ -98,5 +98,9 @@ class FileOperations:
     def save_file(self, file_name):
         pass
 
-    def save_data_to_file(self, file_name, data):
-        pass    
+    # Saves results to file
+    def save_data_to_file(self, file_name, matches, results):
+        savefile=open(file_name, 'w')
+        for result in results:
+            savefile.write(result)
+            savefile.write('\n')
