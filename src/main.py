@@ -98,13 +98,13 @@ class Lab7GroupProject(tk.Tk):
     def search_file(self):
         file_operations = FileOperations()
         file_operations.open_file(self.file_name.get())
-        self.results = file_operations.search_file(self.search_string.get(), self.case_sensitive.get(), self.spin.get())
+        self.results = file_operations.search_file(self.search_string.get(), self.case_sensitive.get(), int(self.spin.get()))
+        self.total_matches.set(len(self.results))
         
-
     def save_file(self):
         file_name = filedialog.asksaveasfilename()
         file_operations = FileOperations()
-        file_operations.save_file(file_name, self.results)
+        file_operations.save_data_to_file(file_name, self.results)
 
     # For enter key bind, will move focus to second textbox if first textbox is focused when enter key is pressed
 
