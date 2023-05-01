@@ -1,106 +1,78 @@
+import re
+
 class FileOperations:
-    OperatingFile = None
-    # Flags whether file is ready for IO
-    # flag=bool(True)
     def __init__(self):
         pass
 
     def open_file(self, file_name):
-        # Tries to open file provided and returns whether successful
         try:
-            OperatingFile = open(file_name, 'r')
-            return bool(True)
-        except:
-            return bool(False)
+            with open(file_name, 'r') as file:
+                self.file_content = file.readlines()
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
 
-    def search_file(self, search_string, caseSensitive, file_name, n_th):
-        skips = int(n_th)
-        if caseSensitive:
-            adds = []
-            try:
-                OperatingFile = open(file_name, 'r')
+    def search_file(self, search_string, case_sensitive, n_th):
+        results = []
 
-                for line in OperatingFile:
+        if not hasattr(self, 'file_content'):
+            print("Error: File not opened or loaded. Please use open_file method first.")
+            return results
 
-                    phrases = line.split()
-                    phrases1 = 0
+        if not case_sensitive:
+            search_string = search_string.lower()
 
-                    # gets the index of the first searched word
-                    try:
+        for line in self.file_content:
+            if not case_sensitive:
+                line = line.lower()
 
-                        phrases1 = phrases.index(search_string)
-                        holds = phrases[phrases1]
+            words = line.split()
+            occurrences = [index for index, word in enumerate(words) if word == search_string]
 
-                        adds.append(holds)
-                    except:
-                        pass
+            for index in occurrences:
+                if index + n_th < len(words):
+                    results.append(words[index + n_th])
 
-                    print(phrases[phrases1])
-
-                    loops = True
-                    # increases the index by 1
-                    starts = phrases1 + 1
-                    holder = 0
-
-                    while loops:
-                        print("in loops")
-                        try:
-                            if skips != 0:
-                                print(skips)
-
-                                add = phrases1 + skips
-
-                                adds.append(phrases[add])
-
-                                phrases3 = phrases.index(search_string, starts)
-                                # here
-                                holder = phrases3
-                                print(holder)
-
-                                adds.append(phrases[holder])
-                                starts = phrases3 + 1
-
-                                phrases1 = starts
-                                print(starts)
+        return results
 
 
-                            else:
-                                print("nth", skips)
+    def save_data_to_file(self, file_name, results):
+        try:
+            with open(file_name, 'w') as savefile:
+                for result in results:
+                    savefile.write(result)
+                    savefile.write('\n')
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
 
-                                phrases3 = phrases.index(search_string, starts)
+def main():
+    # Initialize the FileOperations class
+    file_operations = FileOperations()
 
-                                holder = phrases3
-                                print(holder)
+    # Test the open_file method
+    file_name = "src/txt/President Washinton Inaugural Speech.txt"
+    if file_operations.open_file(file_name):
+        print(f"File {file_name} opened successfully.")
+    else:
+        print(f"Failed to open file {file_name}")
 
-                                adds.append(phrases[holder])
-                                starts = phrases3 + 1
-                                phrases1 = starts
+    # Test the search_file method
+    search_string = "the"
+    case_sensitive = False
+    n_th = 1
+    results = file_operations.search_file(search_string, case_sensitive, n_th)
+    print(f"Search results for '{search_string}':\n{results}")
 
-                        except Exception as e:
-                            print(e)
-                            print("done")
-                            # print(adds)
-                            loops = False
-
-                # the following only works to get selected phrase
-                # matched = [match for match in phrases if search_string in match ]
-                # print(matched)
-                # tracked.extend(matched)
+    # Test the save_data_to_file method
+    output_file = "src/out/output.txt"
+    if file_operations.save_data_to_file(output_file, results):
+        print(f"Search results saved to {output_file}")
+    else:
+        print(f"Failed to save search results to {output_file}")
 
 
-            except Exception as error:
-                print(error)
-                print(*adds)
-                return adds
-        else:
-            pass
-
-    def save_file(self, file_name):
-        pass
-
-    # Saves results to file
-    def save_data_to_file(self, file_name, matches, results):
-        savefile=open(file_name, 'w')
-        for result in results:
-            savefile.write(result)
-            savefile.write('\n')
+if __name__ == "__main__":
+    main()
